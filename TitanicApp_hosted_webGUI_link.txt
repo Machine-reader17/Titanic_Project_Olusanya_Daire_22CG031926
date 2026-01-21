@@ -1,0 +1,6 @@
+Name: Olusanya Oluwadairesayemi
+Matric Number: 22CG031926
+Machine Learning Algorithm Used: RandomForest Classifier
+Model persistence method used: Pickle
+Live URL of the hosted application: https://titanic-project-olusanya-daire-22cg031926.onrender.com
+GitHub repository link: https://github.com/Machine-reader17/Titanic_Project_Olusanya_Daire_22CG031926
