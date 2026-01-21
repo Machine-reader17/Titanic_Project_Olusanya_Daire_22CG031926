@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Titanic Survival Predictor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            /* Slate 900 - Deep Navy */
+            --primary-light: #1e293b;
+            /* Slate 800 */
+            --accent: #0ea5e9;
+            /* Sky 500 */
+            --accent-hover: #0284c7;
+            /* Sky 600 */
+            --bg-color: #f0f9ff;
+            /* Sky 50 */
+            --card-bg: #ffffff;
+            --text-main: #334155;
+            /* Slate 700 */
+            --text-light: #64748b;
+            --border-color: #cbd5e1;
+            --radius: 8px;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            background-image: linear-gradient(to bottom right, #e0f2fe, #f0f9ff);
+            color: var(--text-main);
+            margin: 0;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: var(--radius);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            border-top: 6px solid var(--primary);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 1rem;
+            font-style: italic;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 600px) {
+            form {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .full-width {
+                grid-column: span 2;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: var(--primary-light);
+        }
+
+        input,
+        select {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-family: inherit;
+            background-color: #f8fafc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+            background-color: #fff;
+        }
+
+        button {
+            grid-column: 1 / -1;
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            margin-top: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            background-color: var(--primary-light);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .result-card {
+            grid-column: 1 / -1;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            text-align: center;
+            animation: slideUp 0.4s ease-out;
+        }
+
+        /* Check prediction text content to style appropriately - strictly relying on class binding in verified implementation */
+        .survived {
+            background-color: #dcfce7;
+            border: 1px solid #86efac;
+            color: #14532d;
+        }
+
+        .died {
+            background-color: #fee2e2;
+            border: 1px solid #fca5a5;
+            color: #7f1d1d;
+        }
+
+        .result-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        footer {
+            margin-top: 3rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            border-top: 1px solid var(--border-color);
+            padding-top: 1.5rem;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>R.M.S. Titanic</h1>
+            <p class="subtitle">Passenger Survival Prediction System</p>
+        </header>
+
+        <form method="post" action="/predict">
+            <div class="form-group">
+                <label for="Pclass">Passenger Class</label>
+                <select name="Pclass" id="Pclass" required>
+                    <option value="" disabled selected>Select class...</option>
+                    <option value="1">1st Class (Upper)</option>
+                    <option value="2">2nd Class (Middle)</option>
+                    <option value="3">3rd Class (Lower)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="Sex">Gender</label>
+                <select name="Sex" id="Sex" required>
+                    <option value="" disabled selected>Select gender...</option>
+                    <option value="0">Male</option>
+                    <option value="1">Female</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="Age">Age (Years)</label>
+                <input type="number" step="any" name="Age" id="Age" min="0" required placeholder="e.g., 29">
+            </div>
+
+            <div class="form-group">
+                <label for="Fare">Ticket Fare (£)</label>
+                <input type="number" step="any" name="Fare" id="Fare" min="0" required placeholder="e.g., 7.25">
+            </div>
+
+            <div class="form-group">
+                <label for="SibSp">Siblings / Spouses Aboard</label>
+                <input type="number" name="SibSp" id="SibSp" min="0" required placeholder="0">
+            </div>
+
+            <div class="form-group">
+                <label for="Parch">Parents / Children Aboard</label>
+                <input type="number" name="Parch" id="Parch" min="0" required placeholder="0">
+            </div>
+
+            <button type="submit">Analyze Survival Probability</button>
+        </form>
+
+        {% if prediction_text %}
+        <!-- Dynamically styling based on content is tricky in pure CSS without JS logic classes, 
+             so we use Jinja to apply classes if possible, or fallback to a neutral style. 
+             Since I can't change the backend string, I'll use a generic style that adapts 
+             or use Jinja to check the string content if it's consistent. -->
+        <div class="result-card 
+            {% if 'urvived' in prediction_text and 'ot' not in prediction_text %}survived{% else %}died{% endif %}">
+            <div class="result-title">Prediction Result</div>
+            <p>{{ prediction_text }}</p>
+        </div>
+        {% endif %}
+
+        <footer>
+            CSC415 Machine Learning Project • Random Forest Model
+        </footer>
+    </div>
+</body>
+
+</html>
